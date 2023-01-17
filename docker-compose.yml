@@ -1,0 +1,18 @@
+version: '3.3'
+
+services:
+# cualquier nombre puede ser pero como vas a usar postgree colocamos postgree
+  postgres:
+    image: postgres:13
+    # variables de entorno para la base de datos
+    environment:
+      - POSTGRES_DB=my_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data: {}
+    
