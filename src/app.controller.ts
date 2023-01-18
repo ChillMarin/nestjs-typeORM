@@ -20,6 +20,11 @@ export class AppController {
     return 'Yo soy  con /sas/';
   }
 
+  @Get('jojo')
+  getJojo() {
+    return this.appService.getJojos();
+  }
+
 
 
 

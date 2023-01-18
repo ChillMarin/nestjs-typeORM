@@ -16,6 +16,11 @@ import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @Get('jojo')
+  getjojito() {
+    return this.usersService.getJojo();
+  }
+
   @Get()
   findAll() {
     return this.usersService.findAll();
@@ -48,4 +53,6 @@ export class UsersController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(+id);
   }
+
+
 }

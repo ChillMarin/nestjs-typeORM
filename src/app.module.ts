@@ -4,8 +4,6 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-// libreria para conectar postgres
-import { Client } from 'pg';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -19,20 +17,7 @@ import { DatabaseModule } from './database/database.module';
 import { enviroments} from '../enviroments';
 import config  from './config';
 
-const client = new Client ({
-  user:'root',
-  host:'localhost',
-  database:'my_db',
-  password: '123456',
-  port:5432,
-});
 
-client.connect();
-
-client.query('SELECT * FROM jojo', (err,res) => {
-  console.error(err);
-  console.log(res.rows);
-});
 
 @Module({
   imports: [
@@ -51,12 +36,13 @@ client.query('SELECT * FROM jojo', (err,res) => {
       // joi lo que hace es validar las variables de entorno que se coloquen en el servidor estean correctas
       validationSchema: Joi.object({
         //aqui le decimos que variables de entorno son obligatorias
-        DATABASE_NAME: Joi.string().required(),
-        DATABASE_PORT: Joi.number().required(),
-        API_KEY: Joi.string().required(),
+        POSTGRES_DB: Joi.string().required(),
+        POSTGRES_PORT: Joi.number().required(),
+        API_KEY: Joi.string(),
         // aqui le decimos que variables de entorno son opcionales
-        DATABASE_USER: Joi.string(),
-        DATABASE_PASSWORD: Joi.string(),
+        POSTGRES_USER: Joi.string(),
+        POSTGRES_PASSWORD: Joi.required(),
+        POSTGRES_HOST: Joi.string(),
       })
     }),
   ],
