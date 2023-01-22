@@ -40,7 +40,7 @@ client.connect();
           password,
           database: dbName,
           // esto hara que se sincronicen nuestras entidades con la base de datos pero en produccion debe de estar en false
-          synchronize: true,
+          synchronize: false,
           autoLoadEntities: true,
         };
       },
