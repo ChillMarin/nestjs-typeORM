@@ -320,3 +320,4 @@ Vagrantfile
 src/database/migrations
 src/database/1674420401369-migrations.ts
 src/database/1674420247106-initaltables.ts
+1674423137802-add-fields.ts
