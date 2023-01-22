@@ -6,30 +6,35 @@ import {
   IsPositive,
 } from 'class-validator';
 
-import { PartialType } from '@nestjs/swagger'
+import { PartialType, ApiProperty } from '@nestjs/swagger'
 
 export class CreateProductDto {
   // readonly es que no quiero que se manipule solo que sea de tipo lectura, es decir el atributo no puede ser modificado
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   readonly name: string;
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   readonly description: string;
 
   @IsNumber()
   @IsNotEmpty()
   @IsPositive()
+  @ApiProperty()
   readonly price: number;
 
   @IsNumber()
   @IsNotEmpty()
   @IsPositive()
+  @ApiProperty()
   readonly stock: number;
 
   @IsUrl()
   @IsNotEmpty()
+  @ApiProperty()
   readonly image: string;
 }
 
