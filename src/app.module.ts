@@ -7,17 +7,14 @@ import { firstValueFrom } from 'rxjs';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CostumersController } from './controllers/costumers.controller';
 import { OrdersController } from './controllers/orders.controller';
 import { UsersModule } from './users/users.module';
 
 import { ProductsModule } from './products/products.module';
 import { DatabaseModule } from './database/database.module';
 
-import { enviroments} from '../enviroments';
-import config  from './config';
-
-
+import { enviroments } from '../enviroments';
+import config from './config';
 
 @Module({
   imports: [
@@ -43,10 +40,10 @@ import config  from './config';
         POSTGRES_USER: Joi.string(),
         POSTGRES_PASSWORD: Joi.required(),
         POSTGRES_HOST: Joi.string(),
-      })
+      }),
     }),
   ],
-  controllers: [AppController, CostumersController, OrdersController],
+  controllers: [AppController, OrdersController],
   providers: [
     AppService,
     // {
@@ -65,9 +62,10 @@ import config  from './config';
       inject: [HttpService],
       useFactory: async (http: HttpService) => {
         const tasks = await http.get(
-          'https://jsonplaceholder.typicode.com/todos',{
-            headers: { "Accept-Encoding": "gzip,deflate,compress" }
-          }
+          'https://jsonplaceholder.typicode.com/todos',
+          {
+            headers: { 'Accept-Encoding': 'gzip,deflate,compress' },
+          },
         );
         const value = Promise.resolve(firstValueFrom(tasks));
         return value;

@@ -1,12 +1,12 @@
 import {
   Entity,
   Column,
-  PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
   //usados para las relaciones 1 a 1
   OneToOne,
   JoinColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { Customer } from './customer.entity';
@@ -14,7 +14,7 @@ import { Customer } from './customer.entity';
 // Decorador que indica que es una entidad de la base de datos
 @Entity()
 export class User {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'varchar', length: 255 })
