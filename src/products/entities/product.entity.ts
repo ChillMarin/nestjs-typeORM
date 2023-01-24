@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { Brand } from './brand.entity';
 
 // Decorador que indica que es una entidad de la base de datos
 @Entity()
@@ -46,4 +48,11 @@ export class Product {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updateAt: Date;
+
+  // Relacion de muchos a uno, es decir un producto pertenece a una marca
+  // El () => Brand es para que sepa que es una entidad de la base de datos
+  // El (brand) => brand.products es para que sepa que es una relacion de muchos a uno, es decir un producto pertenece a una marca y esto hace que sea una relacion bidireccional
+  // No es necesario poner el JoinColumn automaticamente sabe que el que tiene el decorador ManyToOne es el que tiene la llave foranea, en el caso pasado de 1a1 si era necesario poner el JoinColumn
+  @ManyToOne(() => Brand, (brand) => brand.products)
+  brand: Brand;
 }
