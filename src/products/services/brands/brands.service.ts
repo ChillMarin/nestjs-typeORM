@@ -16,6 +16,7 @@ export class BrandsService {
   findOne(id: number) {
     const product = this.brandsRepo.findOne({
       where: { id },
+      // ojo cuando lo llamo desde el create product, si no le pongo esto me trae toda la informacion de la relacion brand
       relations: ['products'],
     });
     if (!product) {

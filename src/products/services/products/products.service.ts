@@ -41,6 +41,7 @@ export class ProductsService {
     // de esta manera le decimos a typeorm que cree un nuevo producto con create, es decir que cree un instancia de la entidad Product, pero no la guarda en base de datos hasta que hagamos save
     const newProduct = this.productRepo.create(payload);
     if (payload.brandId) {
+      // ojo adicionalemnte me trae todas las relaciones de brand, eso deberia de arreglarse
       const brand = await this.brandsService.findOne(payload.brandId);
       newProduct.brand = brand;
     }
