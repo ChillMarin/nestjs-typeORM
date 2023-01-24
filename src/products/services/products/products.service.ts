@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'; // importamos el decorador d
 import { Repository } from 'typeorm'; // importamos el repositorio de typeorm
 
 import { Product } from './../../entities/product.entity';
+import { BrandsService } from './../brands/brands.service';
 import { CreateProductDto, UpdateProductDto } from '../../dtos/products.dtos';
 
 @Injectable()
@@ -10,11 +11,14 @@ export class ProductsService {
   // Inyectamos el repositorio de productos y luego le decimos la visibilidad de este repositorio para que solo sea accesible desde esta clase que seria private
   constructor(
     @InjectRepository(Product) private productRepo: Repository<Product>,
+    private brandsService: BrandsService,
   ) {}
 
   findAll() {
     // nos trae todos los productos
-    return this.productRepo.find();
+    return this.productRepo.find({
+      relations: ['brand'], // con esto le decimos que nos traiga la informacion de la relacion brand
+    });
   }
 
   //es asincrona porque usa await
@@ -27,7 +31,7 @@ export class ProductsService {
     return product;
   }
 
-  create(payload: CreateProductDto) {
+  async create(payload: CreateProductDto) {
     // const newProduct =  new Product();
     // newProduct.name = payload.name;
     // newProduct.description = payload.description;
@@ -36,6 +40,10 @@ export class ProductsService {
     // newProduct.image = payload.image;
     // de esta manera le decimos a typeorm que cree un nuevo producto con create, es decir que cree un instancia de la entidad Product, pero no la guarda en base de datos hasta que hagamos save
     const newProduct = this.productRepo.create(payload);
+    if (payload.brandId) {
+      const brand = await this.brandsService.findOne(payload.brandId);
+      newProduct.brand = brand;
+    }
     // y aqui lo guardamos en la base de datos
     return this.productRepo.save(newProduct);
   }
@@ -44,6 +52,10 @@ export class ProductsService {
   async update(id: number, payload: UpdateProductDto) {
     const product = await this.productRepo.findOneBy({ id }); // o {id:id} tambien
     // Lo que hace es actualizar la informacion con base al producto que le pasamos y la informacion que le pasamos en el payload
+    if (payload.brandId) {
+      const brand = await this.brandsService.findOne(payload.brandId);
+      product.brand = brand;
+    }
     this.productRepo.merge(product, payload);
     return this.productRepo.save(product);
   }

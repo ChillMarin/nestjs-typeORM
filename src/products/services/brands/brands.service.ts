@@ -14,7 +14,10 @@ export class BrandsService {
   }
 
   findOne(id: number) {
-    const product = this.brandsRepo.findOneBy({id});
+    const product = this.brandsRepo.findOne({
+      where: { id },
+      relations: ['products'],
+    });
     if (!product) {
       throw new NotFoundException(`Brand #${id} not found`);
     }
@@ -35,5 +38,5 @@ export class BrandsService {
   remove(id: number) {
     return this.brandsRepo.delete(id);
   }
-  
+
 }
