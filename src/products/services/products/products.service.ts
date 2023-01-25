@@ -1,17 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'; // importamos el decorador de typeorm
-import { Repository } from 'typeorm'; // importamos el repositorio de typeorm
+import { Repository, In } from 'typeorm'; // importamos el repositorio de typeorm
 
 import { Product } from './../../entities/product.entity';
-import { BrandsService } from './../brands/brands.service';
+import { Brand } from 'src/products/entities/brand.entity';
 import { CreateProductDto, UpdateProductDto } from '../../dtos/products.dtos';
+import { Category } from 'src/products/entities/category.entity';
 
 @Injectable()
 export class ProductsService {
   // Inyectamos el repositorio de productos y luego le decimos la visibilidad de este repositorio para que solo sea accesible desde esta clase que seria private
   constructor(
     @InjectRepository(Product) private productRepo: Repository<Product>,
-    private brandsService: BrandsService,
+    @InjectRepository(Brand) private brandRepo: Repository<Brand>,
+    // inyeccion de la tabla category
+    @InjectRepository(Category) private categoryRepo: Repository<Category>,
   ) {}
 
   findAll() {
@@ -23,7 +26,10 @@ export class ProductsService {
 
   //es asincrona porque usa await
   async findOne(id: number) {
-    const product = await this.productRepo.findOneBy({ id: id }); // o tambien  findOneBy({ id })
+    const product = await this.productRepo.findOne({
+      where: { id },
+      relations: ['brand', 'categories'],
+    }); // o tambien  findOneBy({ id })
     if (!product) {
       // aqui enviamos un error en imsonia 404 y un message para el manejo de errores
       throw new NotFoundException(`Product #${id} not found`);
@@ -42,8 +48,19 @@ export class ProductsService {
     const newProduct = this.productRepo.create(payload);
     if (payload.brandId) {
       // ojo adicionalemnte me trae todas las relaciones de brand, eso deberia de arreglarse
-      const brand = await this.brandsService.findOne(payload.brandId);
+      const brand = await this.brandRepo.findOne({
+        where: { id: payload.brandId },
+      });
       newProduct.brand = brand;
+    }
+    if (payload.categoriesId) {
+      // inyectamos In de typeorm para que nos traiga los elementos que estan en el array
+      // ejemplo this.categoryRepo.findBy({id: In([1, 2, 3, 4])}) asi tmb podria funcionar
+      const categories = await this.categoryRepo.findBy({
+        id: In(payload.categoriesId),
+      });
+      newProduct.categories = categories;
+      newProduct.categories = categories;
     }
     // y aqui lo guardamos en la base de datos
     return this.productRepo.save(newProduct);
@@ -54,7 +71,9 @@ export class ProductsService {
     const product = await this.productRepo.findOneBy({ id }); // o {id:id} tambien
     // Lo que hace es actualizar la informacion con base al producto que le pasamos y la informacion que le pasamos en el payload
     if (payload.brandId) {
-      const brand = await this.brandsService.findOne(payload.brandId);
+      const brand = await this.brandRepo.findOne({
+        where: { id: payload.brandId },
+      });
       product.brand = brand;
     }
     this.productRepo.merge(product, payload);

@@ -4,6 +4,8 @@ import {
   IsNumber,
   IsUrl,
   IsPositive,
+  ArrayMinSize,
+  IsArray,
 } from 'class-validator';
 
 import { PartialType, ApiProperty } from '@nestjs/swagger'
@@ -42,6 +44,13 @@ export class CreateProductDto {
   @IsPositive()
   @ApiProperty()
   readonly brandId: number;
+
+  @ApiProperty()
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsNumber({}, { each: true })
+  //De esta manera te revisa que tenga al menos 1 elemento el arrray y que los elementos sean numbers
+  readonly categoriesId: number[];
 }
 
 // aqui hace las mismas validaciones del padre pero cada una de ellas va a ser opcional
