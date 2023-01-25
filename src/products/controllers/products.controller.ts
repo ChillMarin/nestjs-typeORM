@@ -72,9 +72,29 @@ export class ProductsController {
     return this.productsService.update(+id, payload);
   }
 
+  //add category de producto, recibimos el id del producto y el id de la categoria
+  @Put(':id/category/:categoryId')
+  addCategoryToProduct(
+    @Param('id') id: string,
+    @Param('categoryId') categoryId: string,
+  ) {
+    // ojo colocamos el + adelante de id y categoryId para que se conviertan a number
+    return this.productsService.addCategoryToProduct(+id, +categoryId);
+  }
+
   //delete
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.productsService.remove(+id);
+  }
+
+  //delete category de producto, recibimos el id del producto y el id de la categoria
+  @Delete(':id/category/:categoryId')
+  deleteCategory(
+    @Param('id') id: string,
+    @Param('categoryId') categoryId: string,
+  ) {
+    // ojo colocamos el + adelante de id y categoryId para que se conviertan a number
+    return this.productsService.removeCategoryByProduct(+id, +categoryId);
   }
 }

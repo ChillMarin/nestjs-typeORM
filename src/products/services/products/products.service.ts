@@ -76,7 +76,49 @@ export class ProductsService {
       });
       product.brand = brand;
     }
+    // si el payload tiene categoriesId entonces actualizamos la informacion de categories de ese producto con la informacion que le pasamos
+    if(payload.categoriesId) {
+      const categories = await this.categoryRepo.findBy({
+        id: In(payload.categoriesId),
+      })
+      //console.log(categories);
+      product.categories = categories;
+    };
     this.productRepo.merge(product, payload);
+    return this.productRepo.save(product);
+  }
+
+  async addCategoryToProduct(productId: number, categoryId: number) {
+    const product = await this.productRepo.findOne({
+      where: { id: productId },
+      relations: ['categories'],
+    });
+    if (!product) {
+      throw new NotFoundException(`Product #${productId} not found`);
+    }
+    const category = await this.categoryRepo.findOne({
+      where: { id: categoryId },
+    });
+    if (!category) {
+      throw new NotFoundException(`Category #${categoryId} not found`);
+    }
+    // aqui le decimos que agregue la categoria al array de categorias del producto
+    product.categories.push(category);
+    return this.productRepo.save(product);
+  }
+
+  async removeCategoryByProduct(productId: number, categoryId: number) {
+    const product = await this.productRepo.findOne({
+      where: { id: productId },
+      relations: ['categories'],
+    });
+    if (!product) {
+      throw new NotFoundException(`Product #${productId} not found`);
+    }
+    // quiero que de este array de categorias me quede el que tenga el id diferente al que le estoy pasando
+    product.categories = product.categories.filter(
+      (item) => item.id !== categoryId,
+    );
     return this.productRepo.save(product);
   }
 
