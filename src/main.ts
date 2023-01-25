@@ -12,6 +12,10 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
+      // esto es para que nos permita transformar los datos que nos llegan en el body o queryParams, por ejemplo si nos llega un string y nosotros esperamos un numero, entonces nos lo transforma
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
     }),
   );
 

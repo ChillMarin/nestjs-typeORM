@@ -4,7 +4,11 @@ import { Repository, In } from 'typeorm'; // importamos el repositorio de typeor
 
 import { Product } from './../../entities/product.entity';
 import { Brand } from 'src/products/entities/brand.entity';
-import { CreateProductDto, UpdateProductDto } from '../../dtos/products.dtos';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  FilterProductDto,
+} from '../../dtos/products.dtos';
 import { Category } from 'src/products/entities/category.entity';
 
 @Injectable()
@@ -17,7 +21,16 @@ export class ProductsService {
     @InjectRepository(Category) private categoryRepo: Repository<Category>,
   ) {}
 
-  findAll() {
+  // colocandole params? hacemos que sea opcional y asi si algun otro metodo lo necesita pueda usarlo sin envair parametros
+  findAll(params?: FilterProductDto) {
+    const {limit, offset} = params;
+    if(params){
+      return this.productRepo.find({
+        relations: ['brand'], // con esto le decimos que nos traiga la informacion de la relacion brand
+        take: limit, // asi le decimos que nos traiga solo x productos
+        skip: offset, // asi le decimos que nos salte x productos
+      });
+    }
     // nos trae todos los productos
     return this.productRepo.find({
       relations: ['brand'], // con esto le decimos que nos traiga la informacion de la relacion brand
@@ -77,13 +90,13 @@ export class ProductsService {
       product.brand = brand;
     }
     // si el payload tiene categoriesId entonces actualizamos la informacion de categories de ese producto con la informacion que le pasamos
-    if(payload.categoriesId) {
+    if (payload.categoriesId) {
       const categories = await this.categoryRepo.findBy({
         id: In(payload.categoriesId),
-      })
+      });
       //console.log(categories);
       product.categories = categories;
-    };
+    }
     this.productRepo.merge(product, payload);
     return this.productRepo.save(product);
   }

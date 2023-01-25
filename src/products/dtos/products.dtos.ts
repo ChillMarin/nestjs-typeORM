@@ -6,9 +6,12 @@ import {
   IsPositive,
   ArrayMinSize,
   IsArray,
+  IsOptional,
+  isPositive,
+  Min,
 } from 'class-validator';
 
-import { PartialType, ApiProperty } from '@nestjs/swagger'
+import { PartialType, ApiProperty } from '@nestjs/swagger';
 
 export class CreateProductDto {
   // readonly es que no quiero que se manipule solo que sea de tipo lectura, es decir el atributo no puede ser modificado
@@ -54,6 +57,16 @@ export class CreateProductDto {
 }
 
 // aqui hace las mismas validaciones del padre pero cada una de ellas va a ser opcional
-export class UpdateProductDto extends PartialType(CreateProductDto) {
+export class UpdateProductDto extends PartialType(CreateProductDto) {}
+
+export class FilterProductDto {
+  @IsPositive()
+  @IsOptional()
+  limit: number;
+
+  @IsOptional()
+  // que el valor sea mayor o igual a 0 , en cambio el ispositve solo agarra positivos no agarra el 0
+  @Min(0)
+  offset: number;
 
 }

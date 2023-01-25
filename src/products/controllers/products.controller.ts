@@ -14,7 +14,11 @@ import {
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { ProductsService } from '../services/products/products.service';
-import { CreateProductDto, UpdateProductDto } from '../dtos/products.dtos';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  FilterProductDto,
+} from '../dtos/products.dtos';
 
 @ApiTags('products')
 @Controller('products')
@@ -23,16 +27,17 @@ export class ProductsController {
 
   @Get()
   @ApiOperation({ summary: 'List of products' })
-  getProducts(
-    @Query('limit') limit: number = 100,
-    @Query('offset') offset: number = 0,
-    @Query('brand') brand: string,
-  ) {
+  getProducts(@Query() params: FilterProductDto)
+  // getProducts(
+  //   @Query('limit') limit: number = 100,
+  //   @Query('offset') offset: number = 0,
+  //   @Query('brand') brand: string,
+ {
     // puedo enviar algo asi http://localhost:3000/products?limit=100&offset=50
     // return {
     //   message: `limit: ${limit} offset: ${offset} brand: ${brand}`,
     // };
-    return this.productsService.findAll();
+    return this.productsService.findAll(params);
   }
 
   // aqui colocamos filter arriba para que no se confunda con el de abajo ya que puede pensar que "filter" es un id
