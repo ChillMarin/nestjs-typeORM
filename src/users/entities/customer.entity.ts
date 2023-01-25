@@ -5,7 +5,9 @@ import {
   UpdateDateColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
+import { Order } from './order.entity';
 
 import { User } from './user.entity';
 
@@ -38,4 +40,7 @@ export class Customer {
   @OneToOne(() => User, (user) => user.customer, { nullable: true })
   // aqui no iria el JoinColum, ya que solo debe de estar en 1 lado de la relacion
   user: User;
+
+  @OneToMany(() => Order, (order) => order.customer)
+  orders: Order[];
 }
