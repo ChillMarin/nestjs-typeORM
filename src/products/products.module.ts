@@ -18,7 +18,8 @@ import { ProductsService } from './services/products/products.service';
   imports: [TypeOrmModule.forFeature([Product, Brand, Category])],
   controllers: [BrandsController, CategoriesController, ProductsController],
   providers: [BrandsService, CategoriesService, ProductsService],
-  exports: [ProductsService],
+  // para que otro modulos puedan usar los servicios de este modulo de products, en el caso del user que necesita el repo de productos
+  exports: [ProductsService, TypeOrmModule],
 
 })
 export class ProductsModule {}
