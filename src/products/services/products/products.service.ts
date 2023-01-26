@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'; // importamos el decorador de typeorm
-import { Repository, In } from 'typeorm'; // importamos el repositorio de typeorm
+import { Repository, In, Between, FindOptionsWhere } from 'typeorm'; // importamos el repositorio de typeorm
 
 import { Product } from './../../entities/product.entity';
 import { Brand } from 'src/products/entities/brand.entity';
@@ -23,9 +23,21 @@ export class ProductsService {
 
   // colocandole params? hacemos que sea opcional y asi si algun otro metodo lo necesita pueda usarlo sin envair parametros
   findAll(params?: FilterProductDto) {
+    // el where lo tipamos con findoptionswhere y le decimos que es de tipo producto y asi nos ayuda a que no nos de error en el find de abajo
+    // tambien el where lo declaramos vacio para que si hay un condicional no nos de error
+    const where:FindOptionsWhere<Product> = {}
     const {limit, offset} = params;
+    const {maxPrice, minPrice} = params;
+    console.log(maxPrice, minPrice);
+
+    if ( minPrice && maxPrice) {
+      // where.price es posible gracias al findoptionswhere
+      where.price = Between(minPrice, maxPrice);
+    }
+
     if(params){
       return this.productRepo.find({
+        where,
         relations: ['brand'], // con esto le decimos que nos traiga la informacion de la relacion brand
         take: limit, // asi le decimos que nos traiga solo x productos
         skip: offset, // asi le decimos que nos salte x productos

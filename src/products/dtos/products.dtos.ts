@@ -9,6 +9,7 @@ import {
   IsOptional,
   isPositive,
   Min,
+  ValidateIf,
 } from 'class-validator';
 
 import { PartialType, ApiProperty } from '@nestjs/swagger';
@@ -68,5 +69,15 @@ export class FilterProductDto {
   // que el valor sea mayor o igual a 0 , en cambio el ispositve solo agarra positivos no agarra el 0
   @Min(0)
   offset: number;
+
+  @IsOptional()
+  @IsPositive()
+  minPrice: number;
+
+  // si el minPrice es mayor a 0 entonces el maxPrice tiene que ser mayor a 0
+  // Esto lo que hace es que valida que existe un minPrice
+  @ValidateIf((item) => item.minPrice)
+  @IsPositive()
+  maxPrice: number;
 
 }
