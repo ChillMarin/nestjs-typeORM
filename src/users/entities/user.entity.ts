@@ -43,6 +43,6 @@ export class User {
   // JoinColumn es para que se cree una columna en la tabla de customer que se llame user_id y que sea la primary key de la tabla user
   // es decir que se cree una relacion entre las tablas user y customer
   @OneToOne(() => Customer, (customer) => customer.user, { nullable: true })
-  @JoinColumn()
+  @JoinColumn({ name: 'user_id'})
   customer: Customer;
 }

@@ -23,7 +23,7 @@
     "migration:generate": "npm run typeorm migration:generate -n",
     "migration:run": "npm run typeorm -- migration:run",
     "migration:show": "npm run typeorm -- migration:show",
-    "migration:drop": "npm run typeorm -- migration:drop"
+    "migration:drop": "npm run typeorm -- schema:drop"
 
   },
   "dependencies": {
